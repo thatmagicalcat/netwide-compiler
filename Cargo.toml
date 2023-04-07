@@ -1,0 +1,16 @@
+[package]
+name = "netwide-compiler"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+path = "src/main.rs"
+name = "nwc"
+
+[dependencies]
+wandbox = "0.1.3"
+tokio = { version = "*", features = ["macros", "rt", "rt-multi-thread"] }
+
+[dependencies.godbolt]
+git = "https://github.com/Headline/godbolt-rs"
+branch = "master"
