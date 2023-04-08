@@ -42,13 +42,15 @@ impl NetWideCompiler {
             .find(|l| l.0 == lang)
             else { return Err("Language not found".to_string()); };
 
-        if target.is_none() { return Ok(()); }
+        if target.is_none() {
+            return Ok(());
+        }
 
         matches!(
             lang_match.1.iter().find(|t| t.as_str() == target.unwrap()),
             None
         )
-        .then(|| Err("Target not found".to_string()))
+        .then(|| Err(format!("Target '{0}' for '{lang}' not found", target.unwrap())))
         .unwrap_or(Ok(()))
     }
 
@@ -70,7 +72,7 @@ impl NetWideCompiler {
         builder.target(if let Some(target) = target {
             target
         } else {
-            self.get_compilers(lang).unwrap().first().unwrap().as_str()
+            self.get_targets(lang).unwrap().first().unwrap().as_str()
         });
 
         if let Err(e) = builder.build(&self.wbox) {
@@ -95,11 +97,11 @@ impl NetWideCompiler {
         })
     }
 
-    // pub fn print_langs(&self) {
-    //     println!("langs: {:#?}", self.languages);
-    // }
+    pub fn get_langs(&self) -> Vec<&String> {
+        self.languages.iter().map(|x| &x.0).collect::<Vec<_>>()
+    }
 
-    fn get_compilers(&self, lang: &str) -> Option<&Vec<String>> {
+    pub fn get_targets(&self, lang: &str) -> Option<&Vec<String>> {
         let Some(lang_match) = self.languages
             .iter()
             .find(|l| l.0 == lang)
