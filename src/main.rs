@@ -1,7 +1,6 @@
 use std::fs;
 
 use clap::{Arg, ArgAction, Command};
-use colorful::{Color, Colorful};
 use netwide_compiler::NetWideCompiler;
 
 #[tokio::main]
@@ -66,7 +65,7 @@ async fn main() {
         let file_contents = fs::read_to_string(file_path.unwrap()).unwrap_or_else(|_| {
             eprintln!(
                 "[{}]: File '{}' not found",
-                "Error".color(Color::Red),
+                "Error",
                 file_path.unwrap()
             );
             std::process::exit(1);
@@ -80,27 +79,26 @@ async fn main() {
         let output = com.run(&lang, target, file_contents).await.unwrap();
 
         println!(
-            "Program output =====\n{}\n=====\n",
+            "program output:\n{}\n",
             if output.program_stdout.is_empty() {
-                "No output".color(Color::Grey100).to_string()
+                "No output"
             } else {
-                output.program_stdout
+                output.program_stdout.as_str()
             }
-            .trim()
-                .bold()
+            .trim_end()
         );
 
         if !output.program_stderr.is_empty() {
             println!(
-                "Program stderr =====\n{}\n=====\n",
-                output.program_stderr.color(Color::LightRed)
+                "program stderr:\n{}\n",
+                output.program_stderr,
             );
         }
 
         if !output.compiler_stdout.is_empty() || !output.compiler_stderr.is_empty() {
             println!(
-                "Compiler output =====\n{}\n{}\n=====",
-                output.compiler_stderr.color(Color::Red),
+                "Compiler output:\n{}\n{}\n",
+                output.compiler_stderr,
                 output.compiler_stdout
             );
         }
